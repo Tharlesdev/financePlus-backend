@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+
+# Environments
+.env
+.venv/
+venv/
+ENV/
+env/
+
+
+# VS Code
+.vscode/
+
+# SQLite database
+*.db
+*.sqlite3
+
+# Pytest cache
+.pytest_cache/
+
+# Mypy cache
+.mypy_cache/
+
+# Logs
+*.log
+
+# IDEs / Editor Temp
+*.swp
+*.swo
+*.idea/
+*.DS_Store
+
+# Build / dist
+build/
+dist/
+*.egg-info/
