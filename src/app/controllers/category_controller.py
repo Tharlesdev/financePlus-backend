@@ -29,7 +29,7 @@ def create_category():
 @category_bp.route("/", methods=["GET"])
 @auth_required
 def list_categories():
-    categories = service.get_all_categories()
+    categories = service.get_all_categories(request.user_id)
     return jsonify(categories), 200
 
 

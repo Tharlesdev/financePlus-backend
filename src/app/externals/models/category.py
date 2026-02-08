@@ -42,7 +42,7 @@ class Category(Base):
     )
 
     name: Mapped[str] = mapped_column(String, nullable=False)
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=True)
 
     user = relationship("User", back_populates="categories")
     transactions: Mapped[list["Transaction"]] = relationship(

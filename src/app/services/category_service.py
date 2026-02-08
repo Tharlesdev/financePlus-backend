@@ -7,8 +7,8 @@ class CategoryService:
     def create_category(self, data):
         return self.repo.create_category(data)
 
-    def get_all_categories(self):
-        return self.repo.get_all_categories()
+    def get_all_categories(self, user_id=None):
+        return self.repo.get_all_categories(user_id)
 
     def get_category_by_id(self, category_id):
         return self.repo.get_category_by_id(category_id)

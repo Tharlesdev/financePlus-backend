@@ -1,5 +1,6 @@
 from src.app.externals.db.connection import SessionLocal
 from src.app.externals.models.category import Category
+from sqlalchemy import or_
 import uuid
 
 class CategoryRepository:
@@ -16,10 +17,17 @@ class CategoryRepository:
         finally:
             session.close()
 
-    def get_all_categories(self):
+    def get_all_categories(self, user_id=None):
         session = SessionLocal()
         try:
-            categories = session.query(Category).all()
+            query = session.query(Category)
+            if user_id:
+                query = query.filter(or_(Category.user_id == user_id, Category.user_id == None))
+            else:
+                # Se não passar user_id, retorna apenas as padrão (ou todas? Melhor garantir segurança e retornar só padrão)
+                query = query.filter(Category.user_id == None)
+                
+            categories = query.all()
             return [c.as_dict for c in categories]
         finally:
             session.close()
