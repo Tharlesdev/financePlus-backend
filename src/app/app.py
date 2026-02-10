@@ -13,7 +13,9 @@ from src.app.controllers.user_controller import user_bp
 from src.app.controllers.category_controller import category_bp
 from src.app.controllers.transaction_controller import transaction_bp
 from src.app.controllers.auth_controller import auth_bp
-from src.app.controllers.transaction_controller import transaction_bp
+from src.app.controllers.dashboard_controller import dashboard_bp
+from src.app.errors import register_error_handlers
+from src.app.limiter import limiter
 
 
 import logging
@@ -23,7 +25,14 @@ def create_app():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     
     app = Flask(__name__)
-    CORS(app)
+    # Habilita CORS para todas as rotas e origens, permitindo headers de Authorization
+    CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+    
+    # Registrar tratamento de erros global
+    register_error_handlers(app)
+    
+    # Inicializar Rate Limiting
+    limiter.init_app(app)
     
     # Configuração do Swagger
     app.config['SWAGGER'] = {
@@ -51,6 +60,7 @@ def create_app():
     app.register_blueprint(category_bp)
     app.register_blueprint(transaction_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(dashboard_bp)
 
     return app
 

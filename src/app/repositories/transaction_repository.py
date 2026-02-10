@@ -139,6 +139,9 @@ class TransactionRepository:
                 query = query.order_by(column.desc())
             else:
                  query = query.order_by(Transaction.created_at.desc())
+            
+            # Conta total antes da paginação
+            total_items = query.count()
 
             # 🟦 paginação
             page = int(filters.get("page", 1))
@@ -149,7 +152,7 @@ class TransactionRepository:
 
             # Executa
             results = query.all()
-            return [t.as_dict for t in results]
+            return [t.as_dict for t in results], total_items
 
         finally:
             db.close()

@@ -41,8 +41,13 @@ def test_list_transactions_with_auth_empty(client, auth_headers):
 
     assert res.status_code == 200
     data = res.get_json()
-    assert isinstance(data, list)
-    assert len(data) == 0
+    
+    # Verifica estrutura nova com paginação
+    assert "data" in data
+    assert "meta" in data
+    assert isinstance(data["data"], list)
+    assert len(data["data"]) == 0
+    assert data["meta"]["total_items"] == 0
 
 def test_list_transactions(client, auth_headers):
     # 1️⃣ cria categoria
@@ -74,9 +79,15 @@ def test_list_transactions(client, auth_headers):
     )
 
     assert res.status_code == 200
-    data = res.get_json()
-
-    assert len(data) == 1
-    assert data[0]["description"] == "Salary"
+    json_response = res.get_json()
+    
+    # Verifica estrutura
+    assert "data" in json_response
+    assert "meta" in json_response
+    
+    transactions = json_response["data"]
+    assert len(transactions) == 1
+    assert transactions[0]["description"] == "Salary"
+    assert json_response["meta"]["total_items"] == 1
 
 

@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install Poetry
+      run: |
+        pip install poetry
+
+    - name: Configure Poetry
+      run: |
+        poetry config virtualenvs.create true
+        poetry config virtualenvs.in-project true
+
+    - name: Install Dependencies
+      run: poetry install --no-interaction
+
+    - name: Run Tests
+      # Define variáveis de ambiente para garantir que os testes usem SQLite e configurações seguras
+      env:
+        DATABASE_URL: sqlite:///test.db
+        JWT_SECRET_KEY: ci_secret_key
+        FLASK_ENV: testing
+      run: |
+        poetry run pytest

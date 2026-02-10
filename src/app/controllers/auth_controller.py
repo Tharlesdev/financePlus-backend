@@ -3,12 +3,14 @@ from src.app.services.auth_service import auth_service
 from src.app.security.auth_required import auth_required
 from src.app.security.jwt_utils import create_token
 from src.app.schemas.user_schemas import UserCreate, UserLogin
+from src.app.limiter import limiter
 from pydantic import ValidationError
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
 @auth_bp.route("/register", methods=["POST"])
+@limiter.limit("5 per minute")
 def register():
     try:
         data = request.json
@@ -24,6 +26,7 @@ def register():
 
 
 @auth_bp.route("/login", methods=["POST"])
+@limiter.limit("10 per minute")
 def login():
     try:
         data = request.json

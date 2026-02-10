@@ -21,7 +21,7 @@ def create_user():
         return jsonify({"error": str(e)}), 400
 
 
-@user_bp.route("/", methods=["GET"])
+@user_bp.route("", methods=["GET"])
 def list_users():
     users = service.get_all_users()
     return jsonify(users), 200

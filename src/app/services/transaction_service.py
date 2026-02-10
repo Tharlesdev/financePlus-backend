@@ -23,13 +23,23 @@ class TransactionService:
         # Validação simples de user_id que estava no service antigo
         if not filters.get("user_id"):
              # O service antigo retornava erro 400. Vamos manter a consistência lançando exceção ou retornando erro.
-             # Para simplificar refatoração sem mudar controller, vamos retornar erro formatado se for o caso,
-             # mas o ideal é o Controller validar.
-             # Como o Repository retorna [], o Controller vai retornar [] 200 OK se não tiver user_id?
-             # Vamos ver o controller.
              return {"error": "user_id é obrigatório"}, 400
         
-        # O Repository retorna a lista diretamente.
-        return self.repo.list(filters)
+        # O Repository retorna (dados, total)
+        data, total_items = self.repo.list(filters)
+        
+        page = int(filters.get("page", 1))
+        per_page = int(filters.get("per_page", 20))
+        total_pages = (total_items + per_page - 1) // per_page
+        
+        return {
+            "data": data,
+            "meta": {
+                "total_items": total_items,
+                "total_pages": total_pages,
+                "current_page": page,
+                "per_page": per_page
+            }
+        }
 
 transaction_service = TransactionService()
