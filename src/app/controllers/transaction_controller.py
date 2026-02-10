@@ -1,12 +1,52 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_file
 from uuid import UUID
 
 from src.app.services.transaction_service import transaction_service
+from src.app.services.export_service import ExportService
 from src.app.security.auth_required import auth_required
 from src.app.schemas.transaction_schemas import TransactionCreate
 from pydantic import ValidationError
 
 transaction_bp = Blueprint("transaction", __name__, url_prefix="/transactions")
+export_service = ExportService()
+
+
+# -------------------------------------------
+# EXPORT (CSV/Excel)
+# -------------------------------------------
+@transaction_bp.route("/export/csv", methods=["GET"])
+@auth_required
+def export_csv():
+    filters = dict(request.args)
+    filters["user_id"] = request.user_id
+    
+    output = export_service.export_transactions_csv(filters)
+    if not output:
+        return jsonify({"error": "Nenhum dado para exportar"}), 404
+        
+    return send_file(
+        output,
+        mimetype="text/csv",
+        as_attachment=True,
+        download_name="transactions.csv"
+    )
+
+@transaction_bp.route("/export/excel", methods=["GET"])
+@auth_required
+def export_excel():
+    filters = dict(request.args)
+    filters["user_id"] = request.user_id
+    
+    output = export_service.export_transactions_excel(filters)
+    if not output:
+        return jsonify({"error": "Nenhum dado para exportar"}), 404
+        
+    return send_file(
+        output,
+        mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        as_attachment=True,
+        download_name="transactions.xlsx"
+    )
 
 
 # -------------------------------------------
