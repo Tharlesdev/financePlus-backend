@@ -30,10 +30,8 @@ def create_app():
     # Habilita CORS para todas as rotas e origens, permitindo headers de Authorization
     CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
     
-    # Registrar tratamento de erros global
     register_error_handlers(app)
     
-    # Inicializar Rate Limiting
     limiter.init_app(app)
     
     # Configuração do Swagger
@@ -46,7 +44,6 @@ def create_app():
     }
     Swagger(app)
 
-    # Criar todas as tabelas (uma única vez)
     with app.app_context():
         Base.metadata.create_all(bind=engine)
 

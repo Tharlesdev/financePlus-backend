@@ -22,7 +22,6 @@ def auth_required(f):
         if not user_id:
             return jsonify({"error": "Token inválido ou expirado"}), 401
 
-        # 🔥 AQUI ESTÁ A CORREÇÃO
         request.user_id = user_id
 
         return f(*args, **kwargs)
