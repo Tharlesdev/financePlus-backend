@@ -27,8 +27,22 @@ def create_app():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     
     app = Flask(__name__)
-    # Habilita CORS para todas as rotas e origens, permitindo headers de Authorization
-    CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+    CORS(
+        app,
+        resources={
+            r"/*": {
+                "origins": [
+                    "http://localhost:3000",
+                    "http://localhost:5173",
+                    "http://127.0.0.1:3000",
+                    "http://127.0.0.1:5173",
+                ]
+            }
+        },
+        supports_credentials=True,
+        expose_headers=["Content-Type", "Authorization"],
+        allow_headers=["Content-Type", "Authorization"],
+    )
     
     register_error_handlers(app)
     
